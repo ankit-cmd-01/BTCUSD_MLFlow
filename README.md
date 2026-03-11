@@ -1,6 +1,8 @@
 # BTCUSD MLflow Forecasting Dashboard
 
 End-to-end BTC-USD forecasting workflow with MLflow experiment tracking, a FastAPI backend, and a custom dashboard frontend.
+## Sequence Diagram
+<img width="778" height="834" alt="image" src="https://github.com/user-attachments/assets/9aab9c6a-6b67-4933-ac31-b82622b74877" />
 
 ## FrontEnd
 <img width="873" height="694" alt="image" src="https://github.com/user-attachments/assets/6dd28637-173d-4900-a773-246b87a1ff3e" />
