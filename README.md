@@ -2,6 +2,9 @@
 
 End-to-end BTC-USD forecasting workflow with MLflow experiment tracking, a FastAPI backend, and a custom dashboard frontend.
 
+## FrontEnd
+<img width="873" height="694" alt="image" src="https://github.com/user-attachments/assets/6dd28637-173d-4900-a773-246b87a1ff3e" />
+
 ## Project Overview
 This project contains:
 - Data fetch and feature engineering for BTC-USD hourly candles
