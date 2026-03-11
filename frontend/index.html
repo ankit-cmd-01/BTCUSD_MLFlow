@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BTC Forecast Analytics</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-shell">
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="brand-mark">&#8383;</div>
+            <div class="brand-copy">
+                <span class="brand-title">BTC Forecast</span>
+                <span class="brand-subtitle">Forecast dashboard</span>
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <div class="status-pill">
+                <span class="status-dot"></span>
+                Live
+            </div>
+            <button class="refresh-btn" id="refreshBtn" type="button">Refresh</button>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <section class="hero-grid">
+            <div class="hero-copy card">
+                <div class="eyebrow">Dashboard</div>
+                <h1 class="hero-title">BTC-USD forecasting dashboard</h1>
+                <p class="hero-text">
+                    Track predictions, model quality, and drift metrics in a simple analytics view.
+                </p>
+
+                <div class="hero-highlights">
+                    <div class="hero-chip">Prediction</div>
+                    <div class="hero-chip">Model metrics</div>
+                    <div class="hero-chip">Drift checks</div>
+                </div>
+            </div>
+
+            <aside class="hero-spotlight card">
+                <div class="spotlight-label">Next hour forecast</div>
+                <div class="spotlight-value mono" id="predictionValue">&mdash;</div>
+                <div class="spotlight-delta" id="predictionDelta">&mdash;</div>
+                <div class="spotlight-time" id="predictionTimestamp">&mdash;</div>
+            </aside>
+        </section>
+
+        <section class="kpi-grid">
+            <article class="kpi-card card">
+                <div class="kpi-icon accent-blue"></div>
+                <div class="kpi-copy">
+                    <span class="kpi-title">RMSE</span>
+                    <span class="kpi-value mono" id="perfRmse">&mdash;</span>
+                    <span class="kpi-note">Recent validation error</span>
+                </div>
+            </article>
+
+            <article class="kpi-card card">
+                <div class="kpi-icon accent-violet"></div>
+                <div class="kpi-copy">
+                    <span class="kpi-title">MAE</span>
+                    <span class="kpi-value mono" id="perfMae">&mdash;</span>
+                    <span class="kpi-note">Absolute forecast deviation</span>
+                </div>
+            </article>
+
+            <article class="kpi-card card">
+                <div class="kpi-icon accent-emerald"></div>
+                <div class="kpi-copy">
+                    <span class="kpi-title">R&sup2; score</span>
+                    <span class="kpi-value mono" id="perfR2">&mdash;</span>
+                    <span class="kpi-note">Explained variance signal</span>
+                </div>
+            </article>
+
+            <article class="kpi-card card">
+                <div class="kpi-icon accent-amber"></div>
+                <div class="kpi-copy">
+                    <span class="kpi-title">Drift ratio</span>
+                    <span class="kpi-value mono" id="driftRatio">&mdash;</span>
+                    <span class="kpi-note">Reference vs current RMSE</span>
+                </div>
+            </article>
+
+            <article class="kpi-card card">
+                <div class="kpi-icon accent-rose"></div>
+                <div class="kpi-copy">
+                    <span class="kpi-title">Feature alerts</span>
+                    <span class="kpi-value mono" id="driftFeatureCount">&mdash;</span>
+                    <span class="kpi-note">Flagged PSI features</span>
+                </div>
+            </article>
+
+            <article class="kpi-card card">
+                <div class="kpi-icon accent-slate"></div>
+                <div class="kpi-copy">
+                    <span class="kpi-title">Performance alert</span>
+                    <span class="kpi-value mono" id="driftPerfAlert">&mdash;</span>
+                    <span class="kpi-note">Current monitoring status</span>
+                </div>
+            </article>
+        </section>
+
+        <section class="content-grid">
+            <div class="content-stack">
+                <section class="card section-card drift-controls-card">
+                    <div class="section-head">
+                        <div>
+                            <div class="section-label">Model quality</div>
+                            <h2 class="section-title">Regression and ARIMA comparison</h2>
+                        </div>
+
+                        <div class="tabs">
+                            <button class="tab active" type="button" onclick="switchTab(this,'lr')">Linear Regression</button>
+                            <button class="tab" type="button" onclick="switchTab(this,'arima')">ARIMA</button>
+                        </div>
+                    </div>
+
+                    <div class="comparison-layout">
+                        <div class="metrics-panel" id="tabLr">
+                            <div class="metric-row">
+                                <div class="metric-label-group">
+                                    <span class="metric-name">RMSE</span>
+                                    <span class="metric-caption">Lower is better</span>
+                                </div>
+                                <span class="metric-value mono" id="lrRmse">&mdash;</span>
+                                <div class="bar"><div id="lrRmseBar" class="fill bar-blue"></div></div>
+                            </div>
+
+                            <div class="metric-row">
+                                <div class="metric-label-group">
+                                    <span class="metric-name">MAE</span>
+                                    <span class="metric-caption">Absolute prediction error</span>
+                                </div>
+                                <span class="metric-value mono" id="lrMae">&mdash;</span>
+                                <div class="bar"><div id="lrMaeBar" class="fill bar-violet"></div></div>
+                            </div>
+
+                            <div class="metric-row">
+                                <div class="metric-label-group">
+                                    <span class="metric-name">R&sup2;</span>
+                                    <span class="metric-caption">Higher indicates stronger fit</span>
+                                </div>
+                                <span class="metric-value mono" id="lrR2">&mdash;</span>
+                                <div class="bar"><div id="lrR2Bar" class="fill bar-emerald"></div></div>
+                            </div>
+                        </div>
+
+                        <div class="metrics-panel" id="tabArima" style="display:none">
+                            <div class="metric-row">
+                                <div class="metric-label-group">
+                                    <span class="metric-name">RMSE</span>
+                                    <span class="metric-caption">Test window error</span>
+                                </div>
+                                <span class="metric-value mono" id="arimaRmse">&mdash;</span>
+                                <div class="bar"><div id="arimaRmseBar" class="fill bar-blue"></div></div>
+                            </div>
+
+                            <div class="metric-row">
+                                <div class="metric-label-group">
+                                    <span class="metric-name">MAE</span>
+                                    <span class="metric-caption">Average magnitude of misses</span>
+                                </div>
+                                <span class="metric-value mono" id="arimaMae">&mdash;</span>
+                                <div class="bar"><div id="arimaMaeBar" class="fill bar-violet"></div></div>
+                            </div>
+                        </div>
+
+                        <aside class="summary-panel">
+                            <div class="summary-card">
+                                <span class="summary-label">&Delta; RMSE</span>
+                                <span class="summary-value mono" id="diffRmse">&mdash;</span>
+                            </div>
+                            <div class="summary-card">
+                                <span class="summary-label">&Delta; MAE</span>
+                                <span class="summary-value mono" id="diffMae">&mdash;</span>
+                            </div>
+                            <div class="summary-card summary-highlight">
+                                <span class="summary-label">Best current model</span>
+                                <span class="summary-value" id="betterModel">&mdash;</span>
+                            </div>
+                        </aside>
+                    </div>
+                </section>
+
+                <section class="card section-card runs-card">
+                    <div class="section-head">
+                        <div>
+                            <div class="section-label">Experiment log</div>
+                            <h2 class="section-title">Latest MLflow runs</h2>
+                        </div>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Experiment</th>
+                                    <th>Run ID</th>
+                                    <th>Status</th>
+                                    <th>RMSE</th>
+                                    <th>MAE</th>
+                                    <th>R&sup2;</th>
+                                </tr>
+                            </thead>
+                            <tbody id="runsTableBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="side-stack">
+                <section class="card section-card">
+                    <div class="section-head compact">
+                        <div>
+                            <div class="section-label">Feature stability</div>
+                            <h2 class="section-title">PSI results</h2>
+                        </div>
+                    </div>
+
+                    <div id="driftFeatures" class="drift-results"></div>
+                </section>
+            </aside>
+        </section>
+    </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
