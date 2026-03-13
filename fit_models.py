@@ -19,10 +19,12 @@ from sklearn.preprocessing import StandardScaler
 from statsmodels.tsa.arima.model import ARIMA
 
 from clean_data import load_data_from_fetch_data
+from config import MLFLOW_EXPERIMENT_NAME, configure_mlflow_tracking
 
 
 # MLflow experiment
-mlflow.set_experiment("btc_forecasting_pipeline")
+configure_mlflow_tracking()
+mlflow.set_experiment(MLFLOW_EXPERIMENT_NAME)
 
 
 def get_cleaned_data(csv_path: str | Path = "btc_usd_2y_1h_data.csv") -> pd.DataFrame:

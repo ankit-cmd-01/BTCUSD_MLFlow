@@ -1,11 +1,14 @@
 # Python cache and bytecode
 __pycache__/
 *.py[cod]
+.pytest_cache/
+.mypy_cache/
 
 # Virtual environment
 .venv/
 venv/
 env/
+.env
 
 # MLflow tracking artifacts and local DB
 mlruns/
@@ -16,8 +19,10 @@ models/
 
 # Large generated datasets (optional; regenerate with fetch_data.py)
 *.csv
+*.log
 
 # Editor/system
 .vscode/
 .DS_Store
 Thumbs.db
+.tmp/

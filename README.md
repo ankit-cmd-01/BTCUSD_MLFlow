@@ -37,7 +37,7 @@ This project contains:
 Install dependencies:
 
 ```powershell
-D:/ML_Flow/.venv/Scripts/python.exe -m pip install -r D:/ML_Flow/requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 ## Run Pipeline
@@ -46,25 +46,25 @@ Run each step from `D:/ML_Flow`.
 1. Fetch and engineer dataset
 
 ```powershell
-D:/ML_Flow/.venv/Scripts/python.exe D:/ML_Flow/fetch_data.py
+python fetch_data.py
 ```
 
 2. Optional: run cleaning + EDA checks
 
 ```powershell
-D:/ML_Flow/.venv/Scripts/python.exe D:/ML_Flow/clean_data.py
+python clean_data.py
 ```
 
 3. Train and log models
 
 ```powershell
-D:/ML_Flow/.venv/Scripts/python.exe D:/ML_Flow/fit_models.py
+python fit_models.py
 ```
 
 4. Start API + dashboard
 
 ```powershell
-D:/ML_Flow/.venv/Scripts/python.exe -m uvicorn dashboard_api:app --host 127.0.0.1 --port 8000
+python -m uvicorn dashboard_api:app --host 127.0.0.1 --port 8000
 ```
 
 Open in browser:
@@ -90,3 +90,5 @@ Open in browser:
 - `fit_models.py` is the main training script used by the API model artifact path.
 - If dataset or model files are missing, API endpoints return clear HTTP errors with guidance.
 - MLflow artifacts are stored locally in this project (`mlruns/`).
+- App, model, dataset, and MLflow paths can now be configured with environment variables in `.env`.
+- For Linux Azure VM deployment, see `AZURE_VM_DEPLOYMENT.md`.

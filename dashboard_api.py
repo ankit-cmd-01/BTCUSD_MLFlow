@@ -13,12 +13,20 @@ from fastapi.staticfiles import StaticFiles
 from mlflow.tracking import MlflowClient
 
 from clean_data import load_data_from_fetch_data
-
+from config import (
+    APP_HOST,
+    APP_PORT,
+    CORS_ORIGINS,
+    DATASET_PATH,
+    FRONTEND_DIR,
+    MODEL_PATH,
+    UVICORN_RELOAD,
+    configure_mlflow_tracking,
+)
 
 ROOT_DIR = Path(__file__).resolve().parent
-DEFAULT_DATASET = ROOT_DIR / "btc_usd_2y_1h_data.csv"
-DEFAULT_MODEL = ROOT_DIR / "models" / "linear_regression_model.joblib"
-FRONTEND_DIR = ROOT_DIR / "frontend"
+DEFAULT_DATASET = DATASET_PATH
+DEFAULT_MODEL = MODEL_PATH
 
 FEATURE_COLUMNS = [
     "open",
@@ -35,7 +43,7 @@ FEATURE_COLUMNS = [
 app = FastAPI(title="BTC MLflow Dashboard API", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -81,11 +89,7 @@ def _load_model_artifact() -> dict[str, Any]:
 
 
 def _get_mlflow_client() -> MlflowClient:
-    tracking_uri = mlflow.get_tracking_uri()
-
-    if tracking_uri == "file:///mlruns":
-        mlflow.set_tracking_uri(f"file:///{(ROOT_DIR / 'mlruns').as_posix()}")
-
+    configure_mlflow_tracking()
     return MlflowClient()
 
 
@@ -379,7 +383,7 @@ def dashboard_overview() -> dict[str, Any]:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("dashboard_api:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("dashboard_api:app", host=APP_HOST, port=APP_PORT, reload=UVICORN_RELOAD)
 
 
 if FRONTEND_DIR.exists():

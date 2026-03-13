@@ -14,9 +14,9 @@
 ## Run
 1. Activate your virtual environment.
 2. Install packages:
-   - `D:/ML_Flow/.venv/Scripts/python.exe -m pip install -r requirements.txt`
+   - `python -m pip install -r requirements.txt`
 3. Start API + UI server:
-   - `D:/ML_Flow/.venv/Scripts/python.exe -m uvicorn dashboard_api:app --host 127.0.0.1 --port 8000`
+   - `python -m uvicorn dashboard_api:app --host 127.0.0.1 --port 8000`
 4. Open browser:
    - `http://127.0.0.1:8000`
 

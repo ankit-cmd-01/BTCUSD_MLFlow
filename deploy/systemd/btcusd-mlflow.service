@@ -1,0 +1,18 @@
+[Unit]
+Description=BTCUSD MLflow FastAPI Dashboard
+After=network.target
+
+[Service]
+Type=simple
+# Update these values for your VM user and project path.
+User=azureuser
+Group=azureuser
+WorkingDirectory=/home/azureuser/BTCUSD_MLFlow
+EnvironmentFile=/home/azureuser/BTCUSD_MLFlow/.env
+ExecStart=/bin/bash /home/azureuser/BTCUSD_MLFlow/deploy/run_vm.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
